@@ -7,7 +7,6 @@ class CommentModelAdmin(admin.ModelAdmin):
     list_display_links = ['article']
     list_filter = ['article', 'content']
     search_fields = ['content']
-    list_editable = ['content']
  
     class Meta:
         model = Comment

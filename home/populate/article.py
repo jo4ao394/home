@@ -1,4 +1,5 @@
 from populate import base
+from django.contrib.auth.models import User
 from article.models import Article, Comment
 
 
@@ -18,11 +19,11 @@ def populate():
             article.content += title + '\n'
         articleList.append(article)
     articles = Article.objects.bulk_create(articleList)
-    
+    admin = User.objects.first()
     for article in articles:
         commentList = []
         for comment in comments:
-            commentList.append(Comment(article=article, content=comment))
+            commentList.append(Comment(article=article,user=admin, content=comment))
         Comment.objects.bulk_create(commentList)
 
     print('done')
