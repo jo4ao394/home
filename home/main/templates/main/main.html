@@ -1,5 +1,14 @@
 {% extends 'main/base.html' %}
-{% block heading %}首頁{% endblock %}
+{% block heading %}{% endblock %}
 {% block content %}
 <p>{{ like }}</p>
+{% for items in itemList %}
+  {% for item in items %}
+  {% if forloop.first %}
+  <h3 class="inlineBlock">
+    <a href="{% url 'article:articleRead' item.id %}">{{ item.title }}</a>
+  </h3>{{ item.pubDateTime|date:'Y-m-d H:i' }}<br>
+  {% endif %}
+  {% endfor %}
+{% endfor %}
 {% endblock %}

@@ -3,7 +3,7 @@ from django.contrib import messages
 
 from article.models import Article, Comment
 from article.forms import ArticleForm
-from main.views import admin_required
+
 from django.db.models.query_utils import Q
 from django.contrib.auth.decorators import login_required
 
@@ -19,7 +19,7 @@ def article(request):
         itemList.append(items)
     context = {'itemList':itemList}
     return render(request, 'article/article.html', context)
-@admin_required
+
 def articleCreate(request):
     '''
     Create a new article instance
@@ -52,7 +52,7 @@ def articleRead(request, articleId):
         'comments': Comment.objects.filter(article=article)
     }
     return render(request, 'article/articleRead.html', context)
-@admin_required
+
 def articleUpdate(request, articleId):
     '''
     Update the article instance:
@@ -74,7 +74,7 @@ def articleUpdate(request, articleId):
     articleForm.save()
     messages.success(request, '文章已修改') 
     return redirect('article:articleRead', articleId=articleId)
-@admin_required
+
 def articleDelete(request, articleId):
     '''
     Delete the article instance:

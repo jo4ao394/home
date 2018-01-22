@@ -1,14 +1,18 @@
-from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.shortcuts import render, redirect
 from django.urls.base import reverse
 
+from article.models import Article, Comment
 
 
 def main(request):
-    '''
-    Render the main page
-    '''
-    context = {'like':'Django 很棒'}
+    articles = Article.objects.all()
+    itemList = []
+    for article in articles:
+        items = [article]
+        items.extend(list(Comment.objects.filter(article=article)))
+        itemList.append(items)
+    context = {'itemList':itemList}
     return render(request, 'main/main.html', context)
 
 def about(request):
