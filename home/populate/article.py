@@ -11,19 +11,20 @@ def populate():
     print('Populating Article and Comment ... ', end='')
     Article.objects.all().delete()
     Comment.objects.all().delete()
-    articleList = []
+    articles = []
+    admin = User.objects.get(is_superuser=True)
     for title in titles:
         article = Article()
         article.title = title
         for j in range(20):
             article.content += title + '\n'
-        articleList.append(article)
-    articles = Article.objects.bulk_create(articleList)
-    admin = User.objects.first()
+        articles.append(article)
+    articles = Article.objects.bulk_create(articles)
+    
     for article in articles:
         commentList = []
         for comment in comments:
-            commentList.append(Comment(article=article,user=admin, content=comment))
+            commentList.append(Comment(article=article, user=admin, content=comment))
         Comment.objects.bulk_create(commentList)
 
     print('done')
