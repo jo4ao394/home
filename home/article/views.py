@@ -1,5 +1,7 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, redirect
 from django.contrib import messages
+from django.urls.base import reverse
+from main.views import admin_required
 
 from article.models import Article, Comment
 from article.forms import ArticleForm
@@ -100,7 +102,7 @@ def articleSearch(request):
                                       Q(content__icontains=searchTerm))
     context = {'articles':articles, 'searchTerm':searchTerm} 
     return render(request, 'article/articleSearch.html', context)
-@login_required
+@admin_required
 def commentCreate(request, articleId):
     '''
     Create a comment for an article:
@@ -118,7 +120,7 @@ def commentCreate(request, articleId):
     article = get_object_or_404(Article, id=articleId)
     Comment.objects.create(article=article, user=request.user, content=comment)
     return redirect('article:articleRead', articleId=articleId)
-@login_required
+@admin_required
 def commentUpdate(request, commentId):
     '''
     Update a comment:
@@ -142,7 +144,7 @@ def commentUpdate(request, commentId):
         commentToUpdate.content = comment
         commentToUpdate.save()
     return redirect('article:articleRead', articleId=article.id)
-@login_required
+
 def articleLike(request, articleId):
     '''
     Add the user to the 'likes' field:
@@ -154,7 +156,7 @@ def articleLike(request, articleId):
     if request.user not in article.likes.all():
         article.likes.add(request.user)
     return articleRead(request, articleId)
-@login_required
+@admin_required
 def commentDelete(request, commentId):
     '''
     Delete a comment:
@@ -172,3 +174,11 @@ def commentDelete(request, commentId):
         return articleRead(request, article.id)
     comment.delete()
     return redirect('article:articleRead', articleId=article.id)
+
+def admin_required(func):
+    def auth(request, *args, **kwargs):
+        if not request.user:
+            messages.error(request, '請以管理者身份登入')
+            return redirect(reverse('account:login') + '?next=' + request.get_full_path())
+        return func(request, *args, **kwargs)
+    return auth
