@@ -19,7 +19,7 @@ def article(request):
         itemList.append(items)
     context = {'itemList':itemList}
     return render(request, 'article/article.html', context)
-
+@login_required
 def articleCreate(request):
     '''
     Create a new article instance
@@ -52,7 +52,7 @@ def articleRead(request, articleId):
         'comments': Comment.objects.filter(article=article)
     }
     return render(request, 'article/articleRead.html', context)
-
+@login_required
 def articleUpdate(request, articleId):
     '''
     Update the article instance:
